@@ -23,7 +23,7 @@
     <header class="bg-white border-b-4 border-blue-900 px-3 sm:px-6 py-2.5 flex items-center justify-between flex-shrink-0 shadow-[0_4px_0_0_#1e3a8a] z-20">
         <div class="flex items-center space-x-2 sm:space-x-3">
             <div class="w-9 h-9 sm:w-11 sm:h-11 bg-blue-100 border-2 border-blue-900 rounded-xl shadow-[2px_2px_0_0_#1e3a8a] overflow-hidden flex items-center justify-center transform -rotate-3 flex-shrink-0">
-                <img src="nelson.jpeg" alt="Snoopy Icon" class="w-full h-full object-cover">
+                <img src="Snoopy.jpeg" alt="Snoopy Icon" class="w-full h-full object-cover">
             </div>
             <div>
                 <h1 class="font-bold text-xs sm:text-xl leading-tight tracking-wide text-blue-900">SNOOPY'S BAZAR</h1>
@@ -103,7 +103,7 @@
                     <!-- Rendered by JS -->
                 </div>
 
-                <!-- Hitungan Total Sesuai Gambar -->
+                <!-- Hitungan Total -->
                 <div class="p-3 sm:p-4 bg-white border-t-4 border-blue-900 space-y-2 text-xs sm:text-sm font-bold flex-shrink-0">
                     <div class="border-t-2 border-dashed border-blue-900 pt-2 flex justify-between text-base sm:text-lg text-black items-center">
                         <span>TOTAL</span>
@@ -178,49 +178,49 @@
 
     </main>
 
-    <!-- MODAL CHECKOUT -->
+    <!-- MODAL CHECKOUT (Diberikan max-h dan overflow-y-auto agar tidak terpotong di HP) -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white border-4 border-blue-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-md shadow-[6px_6px_0_0_#1e3a8a] my-auto">
-            <div class="flex justify-between items-center mb-3 sm:mb-4 border-b-4 border-blue-900 pb-2.5">
+        <div class="bg-white border-4 border-blue-900 rounded-2xl sm:rounded-3xl p-4 sm:p-5 w-full max-w-md shadow-[6px_6px_0_0_#1e3a8a] my-auto max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-3 border-b-4 border-blue-900 pb-2">
                 <h3 class="text-base sm:text-lg font-bold text-blue-950">Selesaikan Pembayaran</h3>
                 <button id="close-checkout-modal" class="text-blue-950 font-bold text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div class="space-y-3 sm:space-y-4">
-                <div class="text-center py-2.5 sm:py-3 bg-blue-100 rounded-2xl border-2 border-blue-900 shadow-[3px_3px_0_0_#1e3a8a]">
-                    <div class="text-[11px] sm:text-xs text-gray-700 font-bold uppercase tracking-wider">Total Tagihan</div>
-                    <div id="checkout-due-amount" class="text-2xl sm:text-3xl font-extrabold text-blue-600">Rp0</div>
+            <div class="space-y-3">
+                <div class="text-center py-2 bg-blue-100 rounded-2xl border-2 border-blue-900 shadow-[3px_3px_0_0_#1e3a8a]">
+                    <div class="text-[11px] text-gray-700 font-bold uppercase tracking-wider">Total Tagihan</div>
+                    <div id="checkout-due-amount" class="text-xl sm:text-2xl font-extrabold text-blue-600">Rp0</div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-blue-950 mb-1.5 sm:mb-2">Metode Pembayaran</label>
-                    <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
-                        <button type="button" data-method="Cash" class="pay-method-btn active bg-blue-300 text-blue-950 py-2 rounded-xl text-xs font-bold border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a]">Cash</button>
-                        <button type="button" data-method="Card" class="pay-method-btn bg-blue-50 text-blue-950 py-2 rounded-xl text-xs font-bold border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a]">Card</button>
-                        <button type="button" data-method="QRIS" class="pay-method-btn bg-blue-50 text-blue-950 py-2 rounded-xl text-xs font-bold border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a]">QRIS</button>
-                        <button type="button" data-method="Debit" class="pay-method-btn bg-blue-50 text-blue-950 py-2 rounded-xl text-xs font-bold border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a]">Debit</button>
+                    <label class="block text-xs font-bold text-blue-950 mb-1">Metode Pembayaran</label>
+                    <div class="grid grid-cols-4 gap-1.5">
+                        <button type="button" data-method="Cash" class="pay-method-btn active bg-blue-300 text-blue-950 py-1.5 rounded-xl text-xs font-bold border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a]">Cash</button>
+                        <button type="button" data-method="Card" class="pay-method-btn bg-blue-50 text-blue-950 py-1.5 rounded-xl text-xs font-bold border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a]">Card</button>
+                        <button type="button" data-method="QRIS" class="pay-method-btn bg-blue-50 text-blue-950 py-1.5 rounded-xl text-xs font-bold border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a]">QRIS</button>
+                        <button type="button" data-method="Debit" class="pay-method-btn bg-blue-50 text-blue-950 py-1.5 rounded-xl text-xs font-bold border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a]">Debit</button>
                     </div>
                 </div>
 
-                <div id="cash-payment-section" class="space-y-2.5 sm:space-y-3">
+                <div id="cash-payment-section" class="space-y-2">
                     <div>
                         <label class="block text-xs font-bold text-blue-950 mb-1">Uang Tunai Diterima</label>
-                        <input type="number" id="cash-tendered-input" placeholder="0" step="1000" class="w-full bg-white text-black px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border-2 border-blue-900 focus:outline-none font-mono text-base sm:text-lg font-bold shadow-[2px_2px_0_0_#1e3a8a]">
+                        <input type="number" id="cash-tendered-input" placeholder="0" step="1000" class="w-full bg-white text-black px-3.5 py-2 rounded-xl border-2 border-blue-900 focus:outline-none font-mono text-base font-bold shadow-[2px_2px_0_0_#1e3a8a]">
                     </div>
                     <div class="grid grid-cols-5 gap-1" id="quick-cash-presets">
-                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]">Exact</button>
-                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]" data-val="10000">10k</button>
-                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]" data-val="20000">20k</button>
-                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]" data-val="50000">50k</button>
-                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]" data-val="100000">100k</button>
+                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] py-1 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]">Exact</button>
+                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] py-1 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]" data-val="10000">10k</button>
+                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] py-1 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]" data-val="20000">20k</button>
+                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] py-1 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]" data-val="50000">50k</button>
+                        <button class="preset-btn bg-blue-50 hover:bg-blue-100 text-blue-950 text-[11px] py-1 rounded-lg font-bold border-2 border-blue-900 shadow-[1px_1px_0_0_#1e3a8a]" data-val="100000">100k</button>
                     </div>
-                    <div class="flex justify-between items-center pt-1 font-bold">
-                        <span class="text-xs sm:text-sm text-blue-950">Kembalian:</span>
-                        <span id="cash-change-amount" class="text-lg sm:text-xl text-green-600">Rp0</span>
+                    <div class="flex justify-between items-center pt-0.5 font-bold text-xs sm:text-sm">
+                        <span class="text-blue-950">Kembalian:</span>
+                        <span id="cash-change-amount" class="text-base sm:text-lg text-green-600">Rp0</span>
                     </div>
                 </div>
 
-                <button id="confirm-payment-btn" class="w-full bg-green-400 hover:bg-green-500 text-blue-950 font-bold py-2.5 sm:py-3 rounded-2xl border-2 border-blue-900 shadow-[3px_3px_0_0_#1e3a8a] transition active:translate-x-0.5 active:translate-y-0.5 text-sm">
+                <button id="confirm-payment-btn" class="w-full bg-green-400 hover:bg-green-500 text-blue-950 font-bold py-2.5 rounded-2xl border-2 border-blue-900 shadow-[3px_3px_0_0_#1e3a8a] transition active:translate-x-0.5 active:translate-y-0.5 text-xs sm:text-sm">
                     KONFIRMASI PEMBAYARAN
                 </button>
             </div>
@@ -229,19 +229,19 @@
 
     <!-- MODAL TAMBAH / EDIT PRODUK -->
     <div id="add-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white border-4 border-blue-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-md shadow-[6px_6px_0_0_#1e3a8a] my-auto">
-            <div class="flex justify-between items-center mb-3 sm:mb-4 border-b-4 border-blue-900 pb-2.5">
+        <div class="bg-white border-4 border-blue-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-md shadow-[6px_6px_0_0_#1e3a8a] my-auto max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-3 border-b-4 border-blue-900 pb-2">
                 <h3 id="modal-product-title" class="text-base sm:text-lg font-bold text-blue-950">Tambah Menu Baru</h3>
                 <button id="close-add-modal" class="text-blue-950 font-bold text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <form id="add-product-form" class="space-y-2.5 sm:space-y-3 font-bold text-xs sm:text-sm">
+            <form id="add-product-form" class="space-y-2.5 font-bold text-xs sm:text-sm">
                 <input type="hidden" id="edit-item-id">
                 <div>
                     <label class="block text-xs text-gray-700 mb-1">Nama Menu</label>
                     <input type="text" id="new-item-name" required class="w-full bg-white text-black px-3 py-2 rounded-xl border-2 border-blue-900 text-xs sm:text-sm focus:outline-none shadow-[2px_2px_0_0_#1e3a8a]">
                 </div>
-                <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block text-xs text-gray-700 mb-1">Harga (Rp)</label>
                         <input type="number" id="new-item-price" step="500" min="0" required class="w-full bg-white text-black px-3 py-2 rounded-xl border-2 border-blue-900 text-xs sm:text-sm focus:outline-none shadow-[2px_2px_0_0_#1e3a8a]">
@@ -266,7 +266,7 @@
 
     <!-- MODAL STRUK -->
     <div id="receipt-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white text-black rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-sm shadow-[6px_6px_0_0_#1e3a8a] border-4 border-blue-900 relative my-auto">
+        <div class="bg-white text-black rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-sm shadow-[6px_6px_0_0_#1e3a8a] border-4 border-blue-900 relative my-auto max-h-[90vh] overflow-y-auto">
             <div id="printable-receipt" class="font-mono text-xs space-y-3">
                 <div class="text-center border-b-2 border-dashed border-blue-900 pb-3">
                     <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-blue-900">🐾 SNOOPY'S BAZAR 🐾</h2>
