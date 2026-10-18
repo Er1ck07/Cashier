@@ -48,12 +48,14 @@
         right: 0;
         bottom: 0;
         width: 100% !important;
-        max-height: calc(100vh - 3.5rem);
+        height: calc(100dvh - 3.5rem);
+        max-height: calc(100dvh - 3.5rem);
         border-left: none !important;
         border-top: 4px solid #1e3a8a;
         border-radius: 1.5rem 1.5rem 0 0;
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         z-index: 40;
+        padding-bottom: env(safe-area-inset-bottom, 20px);
     }
     
     #cart-panel.open {
