@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snoopy's Blue Shack - POS</title>
+    <title>Snoopy's Bazar</title>
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="Snoopy.jpeg">
     <!-- Tailwind CSS -->
@@ -23,10 +23,10 @@
     <header class="bg-white border-b-4 border-blue-900 px-3 sm:px-6 py-2.5 flex items-center justify-between flex-shrink-0 shadow-[0_4px_0_0_#1e3a8a] z-20">
         <div class="flex items-center space-x-2 sm:space-x-3">
             <div class="w-9 h-9 sm:w-11 sm:h-11 bg-blue-100 border-2 border-blue-900 rounded-xl shadow-[2px_2px_0_0_#1e3a8a] overflow-hidden flex items-center justify-center transform -rotate-3 flex-shrink-0">
-                <img src="Snoopy.jpeg" alt="Snoopy Icon" class="w-full h-full object-cover">
+                <img src="nelson.jpeg" alt="Snoopy Icon" class="w-full h-full object-cover">
             </div>
             <div>
-                <h1 class="font-bold text-xs sm:text-xl leading-tight tracking-wide text-blue-900">SNOOPY BLUE POS</h1>
+                <h1 class="font-bold text-xs sm:text-xl leading-tight tracking-wide text-blue-900">SNOOPY'S BAZAR</h1>
                 <p class="text-[10px] sm:text-xs font-bold text-blue-600 hidden xs:block">Good Grief! &bull; Cashier Terminal</p>
             </div>
         </div>
@@ -103,26 +103,9 @@
                     <!-- Rendered by JS -->
                 </div>
 
-                <!-- Hitungan Total -->
+                <!-- Hitungan Total Sesuai Gambar -->
                 <div class="p-3 sm:p-4 bg-white border-t-4 border-blue-900 space-y-2 text-xs sm:text-sm font-bold flex-shrink-0">
-                    <div class="flex justify-between text-gray-600">
-                        <span>Subtotal</span>
-                        <span id="cart-subtotal">Rp0</span>
-                    </div>
-                    <div class="flex justify-between text-gray-600 items-center">
-                        <span>Pajak</span>
-                        <select id="tax-rate-select" class="bg-blue-50 text-black text-xs px-2 py-1 rounded border-2 border-blue-900 focus:outline-none font-bold">
-                            <option value="0">0%</option>
-                            <option value="0.05">5%</option>
-                            <option value="0.10" selected>10%</option>
-                            <option value="0.15">15%</option>
-                        </select>
-                    </div>
-                    <div class="flex justify-between text-gray-600">
-                        <span>Jumlah Pajak</span>
-                        <span id="cart-tax">Rp0</span>
-                    </div>
-                    <div class="border-t-2 border-dashed border-blue-900 pt-1.5 flex justify-between text-base sm:text-lg text-black">
+                    <div class="border-t-2 border-dashed border-blue-900 pt-2 flex justify-between text-base sm:text-lg text-black items-center">
                         <span>TOTAL</span>
                         <span id="cart-total" class="text-blue-600">Rp0</span>
                     </div>
@@ -162,10 +145,16 @@
             <div class="bg-white rounded-2xl border-4 border-blue-900 overflow-hidden shadow-[4px_4px_0_0_#1e3a8a]">
                 <div class="p-3 sm:p-4 border-b-4 border-blue-900 flex justify-between items-center bg-blue-100 flex-wrap gap-2">
                     <h3 class="font-bold text-sm sm:text-base md:text-lg text-blue-950">Riwayat Transaksi</h3>
-                    <button id="export-excel-btn" class="bg-white border-2 border-blue-900 text-blue-950 text-xs px-3 py-1.5 rounded-xl font-bold flex items-center space-x-2 shadow-[2px_2px_0_0_#1e3a8a] hover:bg-gray-50 transition">
-                        <i class="fa-solid fa-file-excel text-green-600"></i>
-                        <span>Export Excel</span>
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button id="clear-history-btn" class="bg-red-100 hover:bg-red-200 border-2 border-blue-900 text-red-700 text-xs px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1.5 shadow-[2px_2px_0_0_#1e3a8a] transition">
+                            <i class="fa-solid fa-trash"></i>
+                            <span>Hapus Semua</span>
+                        </button>
+                        <button id="export-excel-btn" class="bg-white border-2 border-blue-900 text-blue-950 text-xs px-3 py-1.5 rounded-xl font-bold flex items-center space-x-2 shadow-[2px_2px_0_0_#1e3a8a] hover:bg-gray-50 transition">
+                            <i class="fa-solid fa-file-excel text-green-600"></i>
+                            <span>Export Excel</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse min-w-[600px]">
@@ -176,7 +165,7 @@
                                 <th class="p-3">Items</th>
                                 <th class="p-3">Metode</th>
                                 <th class="p-3">Total</th>
-                                <th class="p-3 text-center">Struk</th>
+                                <th class="p-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="history-table-body" class="divide-y-2 divide-blue-900 text-xs sm:text-sm font-medium">
@@ -280,7 +269,7 @@
         <div class="bg-white text-black rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-sm shadow-[6px_6px_0_0_#1e3a8a] border-4 border-blue-900 relative my-auto">
             <div id="printable-receipt" class="font-mono text-xs space-y-3">
                 <div class="text-center border-b-2 border-dashed border-blue-900 pb-3">
-                    <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-blue-900">🐾 SNOOPY BLUE SHACK 🐾</h2>
+                    <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-blue-900">🐾 SNOOPY'S BAZAR 🐾</h2>
                     <p class="text-gray-600 text-[11px]">Doghouse Street No. 1</p>
                     <p id="receipt-date" class="text-gray-600 mt-1 text-[11px]"></p>
                     <p id="receipt-id" class="font-bold text-black text-xs"></p>
@@ -291,8 +280,6 @@
                 </div>
 
                 <div class="space-y-1 border-b-2 border-dashed border-blue-900 pb-3 text-right font-bold">
-                    <div class="flex justify-between"><span>Subtotal:</span><span id="receipt-subtotal">Rp0</span></div>
-                    <div class="flex justify-between"><span>Pajak:</span><span id="receipt-tax">Rp0</span></div>
                     <div class="flex justify-between text-xs sm:text-sm"><span>TOTAL:</span><span id="receipt-total">Rp0</span></div>
                 </div>
 

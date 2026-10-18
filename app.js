@@ -1,5 +1,46 @@
-// --- Default Data Menu Dibuat Kosong ---
-const DEFAULT_PRODUCTS = [];
+// --- Default Data Menu ---
+const DEFAULT_PRODUCTS = [
+    {
+        id: 'prod-1',
+        name: 'Pisang Coklat',
+        price: 8000,
+        stock: 25,
+        category: 'Makanan',
+        icon: 'fa-cookie'
+    },
+    {
+        id: 'prod-2',
+        name: 'Keju Aroma',
+        price: 12000,
+        stock: 35,
+        category: 'Makanan',
+        icon: 'fa-bone'
+    },
+    {
+        id: 'prod-3',
+        name: 'Roti Bakar',
+        price: 8000,
+        stock: 35,
+        category: 'Makanan',
+        icon: 'fa-bread-slice'
+    },
+    {
+        id: 'prod-4',
+        name: 'Roti Bakar Jumbo',
+        price: 14000,
+        stock: 35,
+        category: 'Makanan',
+        icon: 'fa-bread-slice'
+    },
+    {
+        id: 'prod-5',
+        name: 'Tea Vibe',
+        price: 4000,
+        stock: 96,
+        category: 'Minuman',
+        icon: 'fa-mug-hot'
+    }
+];
 
 // --- State Aplikasi ---
 let products = JSON.parse(localStorage.getItem('snoopy_blue_products')) || DEFAULT_PRODUCTS;
@@ -51,10 +92,7 @@ const mobileCartCount = document.getElementById('mobile-cart-count');
 const mobileCartTotal = document.getElementById('mobile-cart-total');
 
 const cartItemsContainer = document.getElementById('cart-items');
-const cartSubtotalEl = document.getElementById('cart-subtotal');
-const cartTaxEl = document.getElementById('cart-tax');
 const cartTotalEl = document.getElementById('cart-total');
-const taxRateSelect = document.getElementById('tax-rate-select');
 const checkoutBtn = document.getElementById('checkout-btn');
 const clearCartBtn = document.getElementById('clear-cart-btn');
 
@@ -80,6 +118,7 @@ const editItemIdInput = document.getElementById('edit-item-id');
 
 const resetDataBtn = document.getElementById('reset-data-btn');
 const exportExcelBtn = document.getElementById('export-excel-btn');
+const clearHistoryBtn = document.getElementById('clear-history-btn');
 
 // --- Helper Functions ---
 function saveToStorage() {
@@ -155,7 +194,7 @@ function renderProducts() {
         const outOfStock = product.stock <= 0;
         return `
             <div class="bg-white border-2 border-blue-900 hover:border-blue-500 p-3.5 md:p-4 rounded-2xl flex flex-col justify-between transition select-none group relative overflow-hidden shadow-[3px_3px_0_0_#1e3a8a] ${outOfStock ? 'opacity-60' : ''}">
-                <!-- Tombol Edit Menu di Sudut Kanan Atas Kartu -->
+                <!-- Tombol Edit Menu -->
                 <button onclick="openEditModal('${product.id}')" title="Edit Menu" class="absolute top-2 right-2 bg-blue-100 hover:bg-blue-200 border border-blue-900 text-blue-900 p-1.5 rounded-lg text-xs z-10 shadow-[1px_1px_0_0_#1e3a8a]">
                     <i class="fa-solid fa-pen"></i>
                 </button>
@@ -241,16 +280,13 @@ clearCartBtn.addEventListener('click', () => {
 });
 
 function calculateCartTotals() {
-    const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-    const taxRate = parseFloat(taxRateSelect.value) || 0;
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax;
-    return { subtotal, tax, total };
+    const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+    return { total };
 }
 
 function renderCart() {
     const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
-    const { subtotal, tax, total } = calculateCartTotals();
+    const { total } = calculateCartTotals();
 
     mobileCartCount.textContent = `${totalItems} items`;
     mobileCartTotal.textContent = formatCurrency(total);
@@ -285,12 +321,8 @@ function renderCart() {
         checkoutBtn.disabled = false;
     }
 
-    cartSubtotalEl.textContent = formatCurrency(subtotal);
-    cartTaxEl.textContent = formatCurrency(tax);
     cartTotalEl.textContent = formatCurrency(total);
 }
-
-taxRateSelect.addEventListener('change', renderCart);
 
 // --- Checkout Modal ---
 checkoutBtn.addEventListener('click', () => {
@@ -346,7 +378,7 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
 });
 
 confirmPaymentBtn.addEventListener('click', () => {
-    const { subtotal, tax, total } = calculateCartTotals();
+    const { total } = calculateCartTotals();
     let cashTendered = parseFloat(cashTenderedInput.value) || 0;
 
     if (currentPaymentMethod === 'Cash' && cashTendered < total) {
@@ -371,8 +403,6 @@ confirmPaymentBtn.addEventListener('click', () => {
         id: 'BLUE-' + Date.now().toString().slice(-6),
         date: new Date().toLocaleString(),
         items: [...cart],
-        subtotal,
-        tax,
         total,
         method: currentPaymentMethod,
         tendered: cashTendered,
@@ -405,8 +435,6 @@ function showReceiptModal(trx) {
         </div>
     `).join('');
 
-    document.getElementById('receipt-subtotal').textContent = formatCurrency(trx.subtotal);
-    document.getElementById('receipt-tax').textContent = formatCurrency(trx.tax);
     document.getElementById('receipt-total').textContent = formatCurrency(trx.total);
     
     document.getElementById('receipt-method').textContent = `Bayar (${trx.method}):`;
@@ -452,9 +480,12 @@ function renderHistory() {
             <td class="p-3 md:p-4 text-xs font-bold text-black">${trx.items.map(i => `${i.qty}x${i.name}`).join(', ')}</td>
             <td class="p-3 md:p-4 text-xs"><span class="px-2 py-1 rounded-lg bg-blue-100 text-blue-950 border border-blue-900 font-bold">${trx.method}</span></td>
             <td class="p-3 md:p-4 font-extrabold text-xs md:text-sm text-green-600">${formatCurrency(trx.total)}</td>
-            <td class="p-3 md:p-4 text-center">
-                <button onclick='viewOldReceipt(${JSON.stringify(trx).replace(/'/g, "&apos;")})' class="text-blue-950 p-2 rounded-xl bg-blue-200 border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a] hover:bg-blue-300 transition">
+            <td class="p-3 md:p-4 text-center space-x-1">
+                <button onclick='viewOldReceipt(${JSON.stringify(trx).replace(/'/g, "&apos;")})' title="Lihat Struk" class="text-blue-950 p-2 rounded-xl bg-blue-200 border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a] hover:bg-blue-300 transition">
                     <i class="fa-solid fa-receipt"></i>
+                </button>
+                <button onclick="deleteHistoryItem('${trx.id}')" title="Hapus Transaksi" class="text-red-700 p-2 rounded-xl bg-red-100 border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a] hover:bg-red-200 transition">
+                    <i class="fa-solid fa-trash"></i>
                 </button>
             </td>
         </tr>
@@ -464,6 +495,23 @@ function renderHistory() {
 window.viewOldReceipt = function(trx) {
     showReceiptModal(trx);
 };
+
+window.deleteHistoryItem = function(id) {
+    if (confirm(`Hapus transaksi ${id}?`)) {
+        history = history.filter(trx => trx.id !== id);
+        saveToStorage();
+        renderHistory();
+    }
+};
+
+clearHistoryBtn.addEventListener('click', () => {
+    if (history.length === 0) return;
+    if (confirm('Yakin ingin menghapus seluruh riwayat transaksi?')) {
+        history = [];
+        saveToStorage();
+        renderHistory();
+    }
+});
 
 // --- Export History ke File Excel (.xlsx) ---
 exportExcelBtn.addEventListener('click', () => {
@@ -477,8 +525,6 @@ exportExcelBtn.addEventListener('click', () => {
         "Tanggal & Waktu": trx.date,
         "Detail Items": trx.items.map(i => `${i.qty}x ${i.name}`).join(', '),
         "Metode Pembayaran": trx.method,
-        "Subtotal": trx.subtotal,
-        "Pajak": trx.tax,
         "Total Pembayaran": trx.total,
         "Uang Diterima": trx.tendered,
         "Kembalian": trx.change
@@ -572,8 +618,8 @@ addProductForm.addEventListener('submit', (e) => {
 });
 
 resetDataBtn.addEventListener('click', () => {
-    if (confirm('Kosongkan seluruh menu?')) {
-        products = [];
+    if (confirm('Reset seluruh menu ke default awal?')) {
+        products = [...DEFAULT_PRODUCTS];
         cart = [];
         saveToStorage();
         renderCategories();
