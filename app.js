@@ -1,10 +1,10 @@
-// --- Default Data Menu Dibuat Kosong (Default Empty) ---
+// --- Default Data Menu Dibuat Kosong ---
 const DEFAULT_PRODUCTS = [];
 
 // --- State Aplikasi ---
-let products = JSON.parse(localStorage.getItem('snoopy_strawberry_products')) || DEFAULT_PRODUCTS;
-let cart = JSON.parse(localStorage.getItem('snoopy_strawberry_cart')) || [];
-let history = JSON.parse(localStorage.getItem('snoopy_strawberry_history')) || [];
+let products = JSON.parse(localStorage.getItem('snoopy_blue_products')) || DEFAULT_PRODUCTS;
+let cart = JSON.parse(localStorage.getItem('snoopy_blue_cart')) || [];
+let history = JSON.parse(localStorage.getItem('snoopy_blue_history')) || [];
 
 let activeCategory = 'All';
 let currentPaymentMethod = 'Cash';
@@ -70,19 +70,22 @@ const receiptModal = document.getElementById('receipt-modal');
 const closeReceiptBtn = document.getElementById('close-receipt-btn');
 const printReceiptBtn = document.getElementById('print-receipt-btn');
 
-const addProductBtn = document.getElementById('add-product-btn');
+const openAddModalBtn = document.getElementById('open-add-modal-btn');
+const mobileAddBtn = document.getElementById('mobile-add-btn');
 const addProductModal = document.getElementById('add-product-modal');
 const closeAddModalBtn = document.getElementById('close-add-modal');
 const addProductForm = document.getElementById('add-product-form');
+const modalProductTitle = document.getElementById('modal-product-title');
+const editItemIdInput = document.getElementById('edit-item-id');
 
 const resetDataBtn = document.getElementById('reset-data-btn');
 const exportExcelBtn = document.getElementById('export-excel-btn');
 
 // --- Helper Functions ---
 function saveToStorage() {
-    localStorage.setItem('snoopy_strawberry_products', JSON.stringify(products));
-    localStorage.setItem('snoopy_strawberry_cart', JSON.stringify(cart));
-    localStorage.setItem('snoopy_strawberry_history', JSON.stringify(history));
+    localStorage.setItem('snoopy_blue_products', JSON.stringify(products));
+    localStorage.setItem('snoopy_blue_cart', JSON.stringify(cart));
+    localStorage.setItem('snoopy_blue_history', JSON.stringify(history));
 }
 
 function formatCurrency(amount) {
@@ -118,7 +121,7 @@ navHistory.addEventListener('click', () => {
 function renderCategories() {
     const categories = ['All', ...new Set(products.map(p => p.category))];
     categoryChips.innerHTML = categories.map(cat => `
-        <button onclick="selectCategory('${cat}')" class="category-chip px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border-2 border-amber-900 bg-white text-black shadow-[2px_2px_0_0_#78350f] transition ${cat === activeCategory ? 'active' : ''}">
+        <button onclick="selectCategory('${cat}')" class="category-chip px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border-2 border-blue-900 bg-white text-black shadow-[2px_2px_0_0_#1e3a8a] transition ${cat === activeCategory ? 'active' : ''}">
             ${cat}
         </button>
     `).join('');
@@ -141,8 +144,8 @@ function renderProducts() {
     if (filtered.length === 0) {
         productGrid.innerHTML = `
             <div class="col-span-full flex flex-col items-center justify-center text-gray-500 py-12 font-bold text-center">
-                <i class="fa-solid fa-heart text-pink-500 text-4xl mb-2"></i>
-                <p class="text-sm">Belum ada menu stroberi. Klik tombol <b>"Add Item"</b> di atas untuk mulai!</p>
+                <i class="fa-solid fa-dog text-blue-500 text-4xl mb-2"></i>
+                <p class="text-sm">Belum ada menu. Klik tombol <b>"+"</b> di atas untuk mulai!</p>
             </div>
         `;
         return;
@@ -151,24 +154,34 @@ function renderProducts() {
     productGrid.innerHTML = filtered.map(product => {
         const outOfStock = product.stock <= 0;
         return `
-            <div onclick="${outOfStock ? '' : `addToCart('${product.id}')`}" class="bg-white border-2 border-amber-900 hover:border-pink-500 p-3.5 md:p-4 rounded-2xl flex flex-col justify-between transition cursor-pointer select-none group relative overflow-hidden shadow-[3px_3px_0_0_#78350f] ${outOfStock ? 'opacity-50 cursor-not-allowed' : ''}">
-                <div class="flex items-start justify-between mb-2">
-                    <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-pink-100 border-2 border-amber-900 flex items-center justify-center text-pink-600 group-hover:scale-105 transition shadow-[2px_2px_0_0_#78350f]">
-                        <i class="fa-solid ${product.icon || 'fa-heart'} text-sm md:text-base"></i>
+            <div class="bg-white border-2 border-blue-900 hover:border-blue-500 p-3.5 md:p-4 rounded-2xl flex flex-col justify-between transition select-none group relative overflow-hidden shadow-[3px_3px_0_0_#1e3a8a] ${outOfStock ? 'opacity-60' : ''}">
+                <!-- Tombol Edit Menu di Sudut Kanan Atas Kartu -->
+                <button onclick="openEditModal('${product.id}')" title="Edit Menu" class="absolute top-2 right-2 bg-blue-100 hover:bg-blue-200 border border-blue-900 text-blue-900 p-1.5 rounded-lg text-xs z-10 shadow-[1px_1px_0_0_#1e3a8a]">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <!-- Area Klik untuk Masuk Keranjang -->
+                <div onclick="${outOfStock ? '' : `addToCart('${product.id}')`}" class="cursor-pointer flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-start justify-between mb-2 pr-6">
+                            <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-blue-100 border-2 border-blue-900 flex items-center justify-center text-blue-700 group-hover:scale-105 transition shadow-[2px_2px_0_0_#1e3a8a]">
+                                <i class="fa-solid ${product.icon || 'fa-bone'} text-sm md:text-base"></i>
+                            </div>
+                            <span class="text-[10px] md:text-xs px-2 py-0.5 rounded-lg ${outOfStock ? 'bg-red-200 text-red-700' : 'bg-blue-50 text-blue-950'} font-bold border border-blue-900 font-mono">
+                                ${outOfStock ? 'Habis' : `Stok: ${product.stock}`}
+                            </span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs md:text-sm text-blue-950 group-hover:text-blue-600 transition line-clamp-1">${product.name}</h4>
+                            <p class="text-[10px] md:text-xs text-gray-600 font-bold mt-0.5">${product.category}</p>
+                        </div>
                     </div>
-                    <span class="text-[10px] md:text-xs px-2 py-0.5 rounded-lg ${outOfStock ? 'bg-red-200 text-red-700' : 'bg-pink-50 text-amber-950'} font-bold border border-amber-900 font-mono">
-                        ${outOfStock ? 'Habis' : `Stok: ${product.stock}`}
-                    </span>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xs md:text-sm text-amber-950 group-hover:text-pink-600 transition line-clamp-1">${product.name}</h4>
-                    <p class="text-[10px] md:text-xs text-gray-600 font-bold mt-0.5">${product.category}</p>
-                </div>
-                <div class="mt-2 md:mt-3 flex items-center justify-between font-bold">
-                    <span class="text-xs md:text-sm text-black">${formatCurrency(product.price)}</span>
-                    <button ${outOfStock ? 'disabled' : ''} class="w-6 h-6 md:w-7 md:h-7 bg-pink-300 hover:bg-pink-400 border-2 border-amber-900 text-amber-950 rounded-lg flex items-center justify-center text-xs transition shadow-[2px_2px_0_0_#78350f]">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
+                    <div class="mt-2 md:mt-3 flex items-center justify-between font-bold">
+                        <span class="text-xs md:text-sm text-black">${formatCurrency(product.price)}</span>
+                        <div class="w-6 h-6 md:w-7 md:h-7 bg-blue-300 hover:bg-blue-400 border-2 border-blue-900 text-blue-950 rounded-lg flex items-center justify-center text-xs transition shadow-[2px_2px_0_0_#1e3a8a]">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -245,27 +258,27 @@ function renderCart() {
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = `
             <div class="h-full flex flex-col items-center justify-center text-gray-400 py-12 font-bold">
-                <i class="fa-solid fa-heart text-pink-400 text-3xl mb-2"></i>
+                <i class="fa-solid fa-basket-shopping text-blue-400 text-3xl mb-2"></i>
                 <p class="text-xs">Keranjang masih kosong</p>
             </div>
         `;
         checkoutBtn.disabled = true;
     } else {
         cartItemsContainer.innerHTML = cart.map(item => `
-            <div class="bg-pink-50/50 p-3 rounded-xl border-2 border-amber-900 flex items-center justify-between shadow-[2px_2px_0_0_#78350f]">
+            <div class="bg-blue-50/50 p-3 rounded-xl border-2 border-blue-900 flex items-center justify-between shadow-[2px_2px_0_0_#1e3a8a]">
                 <div class="flex-1 pr-2">
-                    <div class="font-bold text-sm text-amber-950 line-clamp-1">${item.name}</div>
+                    <div class="font-bold text-sm text-blue-950 line-clamp-1">${item.name}</div>
                     <div class="text-xs text-gray-600 font-bold mt-0.5">${formatCurrency(item.price)}</div>
                 </div>
                 <div class="flex items-center space-x-1.5 font-bold">
-                    <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 bg-white border-2 border-amber-900 rounded-lg flex items-center justify-center text-xs text-amber-950 shadow-[1px_1px_0_0_#78350f]">
+                    <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 bg-white border-2 border-blue-900 rounded-lg flex items-center justify-center text-xs text-blue-950 shadow-[1px_1px_0_0_#1e3a8a]">
                         <i class="fa-solid fa-minus"></i>
                     </button>
-                    <span class="text-xs w-5 text-center text-amber-950">${item.qty}</span>
-                    <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 bg-white border-2 border-amber-900 rounded-lg flex items-center justify-center text-xs text-amber-950 shadow-[1px_1px_0_0_#78350f]">
+                    <span class="text-xs w-5 text-center text-blue-950">${item.qty}</span>
+                    <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 bg-white border-2 border-blue-900 rounded-lg flex items-center justify-center text-xs text-blue-950 shadow-[1px_1px_0_0_#1e3a8a]">
                         <i class="fa-solid fa-plus"></i>
                     </button>
-                    <span class="text-xs font-extrabold text-amber-950 w-16 text-right">${formatCurrency(item.price * item.qty)}</span>
+                    <span class="text-xs font-extrabold text-blue-950 w-16 text-right">${formatCurrency(item.price * item.qty)}</span>
                 </div>
             </div>
         `).join('');
@@ -294,11 +307,11 @@ closeCheckoutModalBtn.addEventListener('click', () => {
 
 payMethodBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        payMethodBtns.forEach(b => b.classList.remove('active', 'bg-pink-300'));
-        payMethodBtns.forEach(b => b.classList.add('bg-pink-50'));
+        payMethodBtns.forEach(b => b.classList.remove('active', 'bg-blue-300'));
+        payMethodBtns.forEach(b => b.classList.add('bg-blue-50'));
         
-        btn.classList.add('active', 'bg-pink-300');
-        btn.classList.remove('bg-pink-50');
+        btn.classList.add('active', 'bg-blue-300');
+        btn.classList.remove('bg-blue-50');
         
         currentPaymentMethod = btn.dataset.method;
 
@@ -355,7 +368,7 @@ confirmPaymentBtn.addEventListener('click', () => {
     });
 
     const transaction = {
-        id: 'NOM-' + Date.now().toString().slice(-6),
+        id: 'BLUE-' + Date.now().toString().slice(-6),
         date: new Date().toLocaleString(),
         items: [...cart],
         subtotal,
@@ -433,14 +446,14 @@ function renderHistory() {
     }
 
     historyTbody.innerHTML = history.map(trx => `
-        <tr class="hover:bg-pink-50">
-            <td class="p-3 md:p-4 font-mono text-xs font-bold text-pink-600">${trx.id}</td>
+        <tr class="hover:bg-blue-50">
+            <td class="p-3 md:p-4 font-mono text-xs font-bold text-blue-600">${trx.id}</td>
             <td class="p-3 md:p-4 text-xs font-bold text-gray-600">${trx.date}</td>
             <td class="p-3 md:p-4 text-xs font-bold text-black">${trx.items.map(i => `${i.qty}x${i.name}`).join(', ')}</td>
-            <td class="p-3 md:p-4 text-xs"><span class="px-2 py-1 rounded-lg bg-pink-100 text-amber-950 border border-amber-900 font-bold">${trx.method}</span></td>
+            <td class="p-3 md:p-4 text-xs"><span class="px-2 py-1 rounded-lg bg-blue-100 text-blue-950 border border-blue-900 font-bold">${trx.method}</span></td>
             <td class="p-3 md:p-4 font-extrabold text-xs md:text-sm text-green-600">${formatCurrency(trx.total)}</td>
             <td class="p-3 md:p-4 text-center">
-                <button onclick='viewOldReceipt(${JSON.stringify(trx).replace(/'/g, "&apos;")})' class="text-amber-950 p-2 rounded-xl bg-pink-200 border-2 border-amber-900 shadow-[2px_2px_0_0_#78350f] hover:bg-pink-300 transition">
+                <button onclick='viewOldReceipt(${JSON.stringify(trx).replace(/'/g, "&apos;")})' class="text-blue-950 p-2 rounded-xl bg-blue-200 border-2 border-blue-900 shadow-[2px_2px_0_0_#1e3a8a] hover:bg-blue-300 transition">
                     <i class="fa-solid fa-receipt"></i>
                 </button>
             </td>
@@ -475,13 +488,41 @@ exportExcelBtn.addEventListener('click', () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Riwayat Transaksi");
 
-    XLSX.writeFile(workbook, `SnoopyStrawberry_Sales_${Date.now()}.xlsx`);
+    XLSX.writeFile(workbook, `SnoopyBluePOS_Sales_${Date.now()}.xlsx`);
 });
 
-// --- Modal Tambah Produk ---
-addProductBtn.addEventListener('click', () => {
-    addProductModal.classList.remove('hidden');
+// --- Modal Tambah / Edit Produk ---
+openAddModalBtn.addEventListener('click', () => {
+    openAddProductModal();
 });
+
+mobileAddBtn.addEventListener('click', () => {
+    openAddProductModal();
+});
+
+function openAddProductModal(product = null) {
+    addProductForm.reset();
+    if (product) {
+        modalProductTitle.textContent = "Edit Menu";
+        editItemIdInput.value = product.id;
+        document.getElementById('new-item-name').value = product.name;
+        document.getElementById('new-item-price').value = product.price;
+        document.getElementById('new-item-stock').value = product.stock;
+        document.getElementById('new-item-category').value = product.category;
+        document.getElementById('new-item-icon').value = product.icon || '';
+    } else {
+        modalProductTitle.textContent = "Tambah Menu Baru";
+        editItemIdInput.value = '';
+    }
+    addProductModal.classList.remove('hidden');
+}
+
+window.openEditModal = function(id) {
+    const product = products.find(p => p.id === id);
+    if (product) {
+        openAddProductModal(product);
+    }
+};
 
 closeAddModalBtn.addEventListener('click', () => {
     addProductModal.classList.add('hidden');
@@ -490,28 +531,43 @@ closeAddModalBtn.addEventListener('click', () => {
 addProductForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    const id = editItemIdInput.value;
     const name = document.getElementById('new-item-name').value.trim();
     const price = parseFloat(document.getElementById('new-item-price').value);
     const stock = parseInt(document.getElementById('new-item-stock').value);
     const category = document.getElementById('new-item-category').value.trim();
-    const icon = document.getElementById('new-item-icon').value.trim() || 'fa-heart';
+    const icon = document.getElementById('new-item-icon').value.trim() || 'fa-bone';
 
-    const newProduct = {
-        id: 'prod-' + Date.now(),
-        name,
-        price,
-        stock,
-        category,
-        icon: icon.startsWith('fa-') ? icon : `fa-${icon}`
-    };
+    const formattedIcon = icon.startsWith('fa-') ? icon : `fa-${icon}`;
 
-    products.push(newProduct);
+    if (id) {
+        // Edit produk yang sudah ada
+        const product = products.find(p => p.id === id);
+        if (product) {
+            product.name = name;
+            product.price = price;
+            product.stock = stock;
+            product.category = category;
+            product.icon = formattedIcon;
+        }
+    } else {
+        // Tambah produk baru
+        const newProduct = {
+            id: 'prod-' + Date.now(),
+            name,
+            price,
+            stock,
+            category,
+            icon: formattedIcon
+        };
+        products.push(newProduct);
+    }
+
     saveToStorage();
-
     renderCategories();
     renderProducts();
+    renderCart();
 
-    addProductForm.reset();
     addProductModal.classList.add('hidden');
 });
 

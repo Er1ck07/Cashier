@@ -1,45 +1,45 @@
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #fff9f9;
-    border-left: 2px solid #78350f;
+    background: #f0f4f8;
+    border-left: 2px solid #1e3a8a;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #78350f;
+    background: #1e3a8a;
     border-radius: 4px;
 }
 
 /* Kategori Chip Aktif */
 .category-chip.active {
-    background-color: #f472b6 !important;
+    background-color: #60a5fa !important;
     color: white !important;
-    border-color: #78350f !important;
-    box-shadow: 2px 2px 0px 0px #78350f !important;
+    border-color: #1e3a8a !important;
+    box-shadow: 2px 2px 0px 0px #1e3a8a !important;
     transform: translateY(-1px);
 }
 
 /* Nav Button Aktif */
 .nav-btn.active {
-    background-color: #f472b6;
+    background-color: #60a5fa;
     color: white;
-    border: 2px solid #78350f;
-    box-shadow: 2px 2px 0px 0px #78350f;
+    border: 2px solid #1e3a8a;
+    box-shadow: 2px 2px 0px 0px #1e3a8a;
 }
 
 /* Payment Method Active */
 .pay-method-btn.active {
-    background-color: #f472b6 !important;
+    background-color: #60a5fa !important;
     color: white !important;
-    border-color: #78350f !important;
-    box-shadow: 2px 2px 0px 0px #78350f !important;
+    border-color: #1e3a8a !important;
+    box-shadow: 2px 2px 0px 0px #1e3a8a !important;
 }
 
-/* Slide-over cart mobile state (Drawer dari bawah ke atas pada layar HP) */
+/* Slide-over cart mobile state */
 @media (max-width: 767px) {
     #cart-panel {
         position: fixed;
@@ -50,7 +50,7 @@
         width: 100% !important;
         max-height: calc(100vh - 3.5rem);
         border-left: none !important;
-        border-top: 4px solid #78350f;
+        border-top: 4px solid #1e3a8a;
         border-radius: 1.5rem 1.5rem 0 0;
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         z-index: 40;
@@ -95,7 +95,7 @@
         align-items: flex-start;
     }
     .no-print {
-        display: none !important:
+        display: none !important;
     }
     #printable-receipt {
         width: 100%;
