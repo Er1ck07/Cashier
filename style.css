@@ -1,0 +1,108 @@
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #fff9f9;
+    border-left: 2px solid #78350f;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #78350f;
+    border-radius: 4px;
+}
+
+/* Kategori Chip Aktif */
+.category-chip.active {
+    background-color: #f472b6 !important;
+    color: white !important;
+    border-color: #78350f !important;
+    box-shadow: 2px 2px 0px 0px #78350f !important;
+    transform: translateY(-1px);
+}
+
+/* Nav Button Aktif */
+.nav-btn.active {
+    background-color: #f472b6;
+    color: white;
+    border: 2px solid #78350f;
+    box-shadow: 2px 2px 0px 0px #78350f;
+}
+
+/* Payment Method Active */
+.pay-method-btn.active {
+    background-color: #f472b6 !important;
+    color: white !important;
+    border-color: #78350f !important;
+    box-shadow: 2px 2px 0px 0px #78350f !important;
+}
+
+/* Slide-over cart mobile state (Drawer dari bawah ke atas pada layar HP) */
+@media (max-width: 767px) {
+    #cart-panel {
+        position: fixed;
+        top: 3.5rem;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100% !important;
+        max-height: calc(100vh - 3.5rem);
+        border-left: none !important;
+        border-top: 4px solid #78350f;
+        border-radius: 1.5rem 1.5rem 0 0;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 40;
+    }
+    
+    #cart-panel.open {
+        transform: translateY(0);
+    }
+    
+    #cart-panel:not(.open) {
+        transform: translateY(105%);
+    }
+}
+
+@media (min-width: 768px) {
+    #cart-panel {
+        transform: none !important;
+        position: static !important;
+        height: 100% !important;
+    }
+}
+
+/* Thermal Print Custom Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #receipt-modal, #printable-receipt, #printable-receipt * {
+        visibility: visible;
+    }
+    #receipt-modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+    .no-print {
+        display: none !important:
+    }
+    #printable-receipt {
+        width: 100%;
+        max-width: 80mm;
+        font-family: 'Courier New', Courier, monospace;
+        color: black;
+        box-shadow: none;
+        padding: 10px;
+    }
+}

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <!-- Meta Viewport Penting untuk Skala Mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Snoopy's Strawberry Shack - POS</title>
+    <!-- Favicon menggunakan gambar Snoopy -->
+    <link rel="icon" type="image/jpeg" href="Snoopy.jpeg">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Comic / Cute touch -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <!-- SheetJS (xlsx) untuk export ke Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Custom Comic CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#fff9f9] text-gray-800 flex flex-col h-screen overflow-hidden font-['Comic_Neue',cursive]">
+
+    <!-- Header Komik Bertema Strawberry Snoopy -->
+    <header class="bg-white border-b-4 border-amber-900 px-3 sm:px-6 py-2.5 flex items-center justify-between flex-shrink-0 shadow-[0_4px_0_0_#78350f] z-20">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 bg-pink-100 border-2 border-amber-900 rounded-xl shadow-[2px_2px_0_0_#78350f] overflow-hidden flex items-center justify-center transform -rotate-3 flex-shrink-0">
+                <img src="Snoopy.jpeg" alt="Snoopy Icon" class="w-full h-full object-cover">
+            </div>
+            <div>
+                <h1 class="font-bold text-sm sm:text-xl leading-tight tracking-wide text-amber-900">SNOOPY BAZAR</h1>
+                <p class="text-[10px] sm:text-xs font-bold text-pink-600 hidden xs:block">Nom Nom! &bull; Cashier Terminal</p>
+            </div>
+        </div>
+
+        <!-- Tab Navigasi -->
+        <nav class="flex space-x-1 sm:space-x-2 bg-pink-50 p-1 rounded-xl sm:rounded-2xl border-2 border-amber-900 shadow-[2px_2px_0_0_#78350f]">
+            <button id="nav-register" class="nav-btn active px-2.5 sm:px-4 py-1 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition">
+                <i class="fa-solid fa-store"></i>
+                <span class="hidden xs:inline">Register</span>
+            </button>
+            <button id="nav-history" class="nav-btn px-2.5 sm:px-4 py-1 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 text-amber-800 hover:text-black transition">
+                <i class="fa-solid fa-book-open"></i>
+                <span class="hidden xs:inline">History</span>
+            </button>
+        </nav>
+
+        <!-- Aksi Header -->
+        <div class="flex items-center space-x-2">
+            <button id="add-product-btn" class="bg-pink-300 hover:bg-pink-400 border-2 border-amber-900 text-amber-950 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition shadow-[2px_2px_0_0_#78350f] active:translate-x-0.5 active:translate-y-0.5">
+                <i class="fa-solid fa-plus"></i>
+                <span class="hidden md:inline">Add Item</span>
+            </button>
+            <button id="reset-data-btn" title="Reset Menu" class="bg-amber-100 hover:bg-amber-200 border-2 border-amber-900 text-amber-950 p-1.5 sm:p-2 rounded-xl text-xs sm:text-sm transition shadow-[2px_2px_0_0_#78350f]">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex overflow-hidden relative">
+
+        <!-- REGISTER VIEW -->
+        <section id="view-register" class="flex-1 flex flex-col md:flex-row w-full h-full overflow-hidden">
+            
+            <!-- Katalog Produk -->
+            <div class="flex-1 flex flex-col p-3 sm:p-4 md:p-6 overflow-hidden border-r-0 md:border-r-4 border-amber-900 bg-[#fff9f9] pb-24 md:pb-6">
+                <!-- Search -->
+                <div class="mb-3">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-pink-500 text-sm"></i>
+                        <input type="text" id="search-input" placeholder="Cari menu stroberi Snoopy..." class="w-full bg-white text-black pl-10 pr-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border-2 border-amber-900 focus:outline-none focus:ring-2 focus:ring-pink-400 text-xs sm:text-sm font-bold shadow-[3px_3px_0_0_#78350f]">
+                    </div>
+                </div>
+
+                <!-- Kategori Chips -->
+                <div id="category-chips" class="flex space-x-2 mb-3 overflow-x-auto pb-1.5 scrollbar-thin flex-shrink-0">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Product Grid -->
+                <div id="product-grid" class="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 overflow-y-auto pr-1">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- Panel Keranjang Belanja (Slide-up di HP, Desktop di kanan) -->
+            <div id="cart-panel" class="absolute inset-x-0 bottom-0 top-14 sm:top-16 md:static md:w-96 bg-white border-t-4 md:border-t-0 md:border-l-4 border-amber-900 flex flex-col h-full flex-shrink-0 shadow-2xl md:shadow-none transform translate-y-full md:translate-y-0 transition-transform duration-300 z-30">
+                <div class="p-3 sm:p-4 border-b-4 border-amber-900 flex justify-between items-center bg-pink-100 flex-shrink-0">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-heart text-pink-600"></i>
+                        <h2 class="font-bold text-sm sm:text-base text-amber-950">Keranjang Nom Nom</h2>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button id="clear-cart-btn" class="text-xs text-red-600 hover:text-red-800 font-bold underline">Clear</button>
+                        <button id="close-cart-mobile" class="md:hidden text-amber-950 font-bold text-xl px-1"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+
+                <!-- Cart Items -->
+                <div id="cart-items" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Hitungan Total -->
+                <div class="p-3 sm:p-4 bg-white border-t-4 border-amber-900 space-y-2 text-xs sm:text-sm font-bold flex-shrink-0">
+                    <div class="flex justify-between text-gray-600">
+                        <span>Subtotal</span>
+                        <span id="cart-subtotal">Rp0</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600 items-center">
+                        <span>Pajak</span>
+                        <select id="tax-rate-select" class="bg-pink-50 text-black text-xs px-2 py-1 rounded border-2 border-amber-900 focus:outline-none font-bold">
+                            <option value="0">0%</option>
+                            <option value="0.05">5%</option>
+                            <option value="0.10" selected>10%</option>
+                            <option value="0.15">15%</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>Jumlah Pajak</span>
+                        <span id="cart-tax">Rp0</span>
+                    </div>
+                    <div class="border-t-2 border-dashed border-amber-900 pt-1.5 flex justify-between text-base sm:text-lg text-black">
+                        <span>TOTAL</span>
+                        <span id="cart-total" class="text-pink-600">Rp0</span>
+                    </div>
+
+                    <button id="checkout-btn" disabled class="w-full mt-1 bg-pink-300 hover:bg-pink-400 disabled:opacity-50 disabled:cursor-not-allowed text-amber-950 font-bold py-2.5 sm:py-3 px-4 rounded-xl sm:rounded-2xl border-2 border-amber-900 shadow-[3px_3px_0_0_#78350f] transition active:translate-x-0.5 active:translate-y-0.5 flex items-center justify-center space-x-2">
+                        <span>BAYAR SEKARANG</span>
+                        <i class="fa-solid fa-utensils"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Floating Button Mobile Cart (Hanya tampil di HP) -->
+        <button id="mobile-cart-toggle" class="md:hidden fixed bottom-4 right-4 bg-pink-300 border-2 border-amber-900 text-amber-950 px-4 py-3 rounded-2xl shadow-[4px_4px_0_0_#78350f] flex items-center space-x-3 z-20 font-bold text-xs sm:text-sm">
+            <i class="fa-solid fa-basket-shopping text-base"></i>
+            <span id="mobile-cart-count">0 items</span>
+            <span class="bg-amber-900 text-pink-200 px-2 py-0.5 rounded-lg text-xs" id="mobile-cart-total">Rp0</span>
+        </button>
+
+        <!-- HISTORY VIEW -->
+        <section id="view-history" class="hidden flex-1 p-3 sm:p-4 md:p-6 overflow-y-auto space-y-4 sm:space-y-6 bg-[#fff9f9]">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border-4 border-amber-900 shadow-[4px_4px_0_0_#78350f]">
+                    <div class="text-gray-600 text-xs sm:text-sm font-bold mb-1">Total Pendapatan</div>
+                    <div id="stat-revenue" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-green-600">Rp0</div>
+                </div>
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border-4 border-amber-900 shadow-[4px_4px_0_0_#78350f]">
+                    <div class="text-gray-600 text-xs sm:text-sm font-bold mb-1">Total Transaksi</div>
+                    <div id="stat-orders" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-pink-600">0</div>
+                </div>
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border-4 border-amber-900 shadow-[4px_4px_0_0_#78350f]">
+                    <div class="text-gray-600 text-xs sm:text-sm font-bold mb-1">Rata-rata Struk</div>
+                    <div id="stat-avg" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-blue-600">Rp0</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border-4 border-amber-900 overflow-hidden shadow-[4px_4px_0_0_#78350f]">
+                <div class="p-3 sm:p-4 border-b-4 border-amber-900 flex justify-between items-center bg-pink-100 flex-wrap gap-2">
+                    <h3 class="font-bold text-sm sm:text-base md:text-lg text-amber-950">Riwayat Transaksi</h3>
+                    <button id="export-excel-btn" class="bg-white border-2 border-amber-900 text-amber-950 text-xs px-3 py-1.5 rounded-xl font-bold flex items-center space-x-2 shadow-[2px_2px_0_0_#78350f] hover:bg-gray-50 transition">
+                        <i class="fa-solid fa-file-excel text-green-600"></i>
+                        <span>Export Excel</span>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr class="bg-pink-50 text-amber-950 text-[11px] sm:text-xs uppercase tracking-wider border-b-2 border-amber-900 font-bold">
+                                <th class="p-3">Order ID</th>
+                                <th class="p-3">Waktu</th>
+                                <th class="p-3">Items</th>
+                                <th class="p-3">Metode</th>
+                                <th class="p-3">Total</th>
+                                <th class="p-3 text-center">Struk</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body" class="divide-y-2 divide-amber-900 text-xs sm:text-sm font-medium">
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL CHECKOUT -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white border-4 border-amber-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-md shadow-[6px_6px_0_0_#78350f] my-auto">
+            <div class="flex justify-between items-center mb-3 sm:mb-4 border-b-4 border-amber-900 pb-2.5">
+                <h3 class="text-base sm:text-lg font-bold text-amber-950">Selesaikan Pembayaran</h3>
+                <button id="close-checkout-modal" class="text-amber-950 font-bold text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="space-y-3 sm:space-y-4">
+                <div class="text-center py-2.5 sm:py-3 bg-pink-100 rounded-2xl border-2 border-amber-900 shadow-[3px_3px_0_0_#78350f]">
+                    <div class="text-[11px] sm:text-xs text-gray-700 font-bold uppercase tracking-wider">Total Tagihan</div>
+                    <div id="checkout-due-amount" class="text-2xl sm:text-3xl font-extrabold text-pink-600">Rp0</div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-amber-950 mb-1.5 sm:mb-2">Metode Pembayaran</label>
+                    <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
+                        <button type="button" data-method="Cash" class="pay-method-btn active bg-pink-300 text-amber-950 py-2 rounded-xl text-xs font-bold border-2 border-amber-900 shadow-[2px_2px_0_0_#78350f]">Cash</button>
+                        <button type="button" data-method="Card" class="pay-method-btn bg-pink-50 text-amber-950 py-2 rounded-xl text-xs font-bold border-2 border-amber-900 shadow-[2px_2px_0_0_#78350f]">Card</button>
+                        <button type="button" data-method="QRIS" class="pay-method-btn bg-pink-50 text-amber-950 py-2 rounded-xl text-xs font-bold border-2 border-amber-900 shadow-[2px_2px_0_0_#78350f]">QRIS</button>
+                        <button type="button" data-method="Debit" class="pay-method-btn bg-pink-50 text-amber-950 py-2 rounded-xl text-xs font-bold border-2 border-amber-900 shadow-[2px_2px_0_0_#78350f]">Debit</button>
+                    </div>
+                </div>
+
+                <div id="cash-payment-section" class="space-y-2.5 sm:space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-amber-950 mb-1">Uang Tunai Diterima</label>
+                        <input type="number" id="cash-tendered-input" placeholder="0" step="1000" class="w-full bg-white text-black px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border-2 border-amber-900 focus:outline-none font-mono text-base sm:text-lg font-bold shadow-[2px_2px_0_0_#78350f]">
+                    </div>
+                    <div class="grid grid-cols-5 gap-1" id="quick-cash-presets">
+                        <button class="preset-btn bg-pink-50 hover:bg-pink-100 text-amber-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-amber-900 shadow-[1px_1px_0_0_#78350f]">Exact</button>
+                        <button class="preset-btn bg-pink-50 hover:bg-pink-100 text-amber-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-amber-900 shadow-[1px_1px_0_0_#78350f]" data-val="10000">10k</button>
+                        <button class="preset-btn bg-pink-50 hover:bg-pink-100 text-amber-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-amber-900 shadow-[1px_1px_0_0_#78350f]" data-val="20000">20k</button>
+                        <button class="preset-btn bg-pink-50 hover:bg-pink-100 text-amber-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-amber-900 shadow-[1px_1px_0_0_#78350f]" data-val="50000">50k</button>
+                        <button class="preset-btn bg-pink-50 hover:bg-pink-100 text-amber-950 text-[11px] sm:text-xs py-1.5 rounded-lg font-bold border-2 border-amber-900 shadow-[1px_1px_0_0_#78350f]" data-val="100000">100k</button>
+                    </div>
+                    <div class="flex justify-between items-center pt-1 font-bold">
+                        <span class="text-xs sm:text-sm text-amber-950">Kembalian:</span>
+                        <span id="cash-change-amount" class="text-lg sm:text-xl text-green-600">Rp0</span>
+                    </div>
+                </div>
+
+                <button id="confirm-payment-btn" class="w-full bg-green-400 hover:bg-green-500 text-amber-950 font-bold py-2.5 sm:py-3 rounded-2xl border-2 border-amber-900 shadow-[3px_3px_0_0_#78350f] transition active:translate-x-0.5 active:translate-y-0.5 text-sm">
+                    KONFIRMASI PEMBAYARAN
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH PRODUK -->
+    <div id="add-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white border-4 border-amber-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-md shadow-[6px_6px_0_0_#78350f] my-auto">
+            <div class="flex justify-between items-center mb-3 sm:mb-4 border-b-4 border-amber-900 pb-2.5">
+                <h3 class="text-base sm:text-lg font-bold text-amber-950">Tambah Menu Baru</h3>
+                <button id="close-add-modal" class="text-amber-950 font-bold text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="add-product-form" class="space-y-2.5 sm:space-y-3 font-bold text-xs sm:text-sm">
+                <div>
+                    <label class="block text-xs text-gray-700 mb-1">Nama Menu</label>
+                    <input type="text" id="new-item-name" required class="w-full bg-white text-black px-3 py-2 rounded-xl border-2 border-amber-900 text-xs sm:text-sm focus:outline-none shadow-[2px_2px_0_0_#78350f]">
+                </div>
+                <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+                    <div>
+                        <label class="block text-xs text-gray-700 mb-1">Harga (Rp)</label>
+                        <input type="number" id="new-item-price" step="500" min="0" required class="w-full bg-white text-black px-3 py-2 rounded-xl border-2 border-amber-900 text-xs sm:text-sm focus:outline-none shadow-[2px_2px_0_0_#78350f]">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-700 mb-1">Stok</label>
+                        <input type="number" id="new-item-stock" min="1" required class="w-full bg-white text-black px-3 py-2 rounded-xl border-2 border-amber-900 text-xs sm:text-sm focus:outline-none shadow-[2px_2px_0_0_#78350f]">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-700 mb-1">Kategori</label>
+                    <input type="text" id="new-item-category" placeholder="misal: Stroberi, Tea Vibe" required class="w-full bg-white text-black px-3 py-2 rounded-xl border-2 border-amber-900 text-xs sm:text-sm focus:outline-none shadow-[2px_2px_0_0_#78350f]">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-700 mb-1">Icon FontAwesome</label>
+                    <input type="text" id="new-item-icon" placeholder="fa-heart atau fa-mug-hot" class="w-full bg-white text-black px-3 py-2 rounded-xl border-2 border-amber-900 text-xs sm:text-sm focus:outline-none shadow-[2px_2px_0_0_#78350f]">
+                </div>
+                <button type="submit" class="w-full bg-pink-300 hover:bg-pink-400 text-amber-950 font-bold py-2.5 rounded-xl border-2 border-amber-900 shadow-[3px_3px_0_0_#78350f] transition active:translate-x-0.5 active:translate-y-0.5 mt-2">SIMPAN MENU</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL STRUK -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white text-black rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-sm shadow-[6px_6px_0_0_#78350f] border-4 border-amber-900 relative my-auto">
+            <div id="printable-receipt" class="font-mono text-xs space-y-3">
+                <div class="text-center border-b-2 border-dashed border-amber-900 pb-3">
+                    <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-amber-900">🍓 SNOOPY STRAWBERRY 🍓</h2>
+                    <p class="text-gray-600 text-[11px]">Doghouse Street No. 1</p>
+                    <p id="receipt-date" class="text-gray-600 mt-1 text-[11px]"></p>
+                    <p id="receipt-id" class="font-bold text-black text-xs"></p>
+                </div>
+
+                <div id="receipt-items-list" class="space-y-1.5 border-b-2 border-dashed border-amber-900 pb-3">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <div class="space-y-1 border-b-2 border-dashed border-amber-900 pb-3 text-right font-bold">
+                    <div class="flex justify-between"><span>Subtotal:</span><span id="receipt-subtotal">Rp0</span></div>
+                    <div class="flex justify-between"><span>Pajak:</span><span id="receipt-tax">Rp0</span></div>
+                    <div class="flex justify-between text-xs sm:text-sm"><span>TOTAL:</span><span id="receipt-total">Rp0</span></div>
+                </div>
+
+                <div class="space-y-1 text-right font-bold text-[11px] sm:text-xs">
+                    <div class="flex justify-between"><span id="receipt-method">Bayar:</span><span id="receipt-paid">Rp0</span></div>
+                    <div class="flex justify-between"><span>Kembali:</span><span id="receipt-change">Rp0</span></div>
+                </div>
+
+                <div class="text-center pt-2 text-pink-600 font-bold text-xs">
+                    <p>* Nom Nom! Thank You! *</p>
+                </div>
+            </div>
+
+            <div class="flex space-x-2 mt-4 sm:mt-5 no-print font-bold text-xs">
+                <button id="print-receipt-btn" class="flex-1 bg-pink-300 hover:bg-pink-400 border-2 border-amber-900 text-amber-950 py-2 rounded-xl shadow-[2px_2px_0_0_#78350f] transition">Cetak</button>
+                <button id="close-receipt-btn" class="flex-1 bg-gray-100 hover:bg-gray-200 border-2 border-amber-900 text-amber-950 py-2 rounded-xl shadow-[2px_2px_0_0_#78350f] transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Utama -->
+    <script src="app.js"></script>
+</body>
+</html>
